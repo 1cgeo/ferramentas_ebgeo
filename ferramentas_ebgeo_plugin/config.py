@@ -1,4 +1,4 @@
 class Config:
 
-    NAME = 'Street View Plugin'
+    NAME = 'Ferramentas do EBGeo'
     VERSION = '0.0.0'

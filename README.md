@@ -15,12 +15,12 @@
 5. Durante o trabalho a câmera estava no modo de foto por lapso de tempo de 0,5 segundos. A velocidade da caminhonete ficou em média 35 km por hora.
 
 ### **PROCESSAMENTO**
-    
+
 1. Rederizar as imagens Fisheye gerada pela câmera.
-    
+
     > No meu caso eu fiz uso da câmera gopro fusion e usei o Fusion Studio 1.3.
 
-2. a pasta "street_view_plugin" é um plugin do Qgis criado para auxiliar na criação dos metadados para o site. Diante disso, após instalarmos vamos utiliza-lo da seguinte forma:
+2. a pasta "ferramentas_ebgeo_plugin" é um plugin do Qgis criado para auxiliar na criação dos metadados para o site. Diante disso, após instalarmos vamos utiliza-lo da seguinte forma:
 
     > **Note:**
     > Vale destacar que há vários problemas que podem surgi que depende de análise e correção manual.
@@ -50,7 +50,7 @@
         ![](./doc/connect2.png)
 
     5. Após o passo anterior haverá as seguintes camadas:
-        
+
         ![](./doc/layers.png)
 
         > **Atenção:**
@@ -70,7 +70,7 @@
 ### **SITE**
 
 1. Converter as imagens para o formato .webp:
-    
+
     [Tutorial para conversão](https://www.tecmint.com/convert-images-to-webp-format-in-linux/)
 
     > **Note:**
@@ -90,5 +90,5 @@
     ![](./doc/street1.png)
 
     ![](./doc/street2.png)
-    
+
 

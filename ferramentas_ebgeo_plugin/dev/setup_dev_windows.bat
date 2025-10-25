@@ -6,8 +6,8 @@ rem Subir dois níveis: de \dev para \street_view_gopro
 for %%a in ("%_updir%\..") do set "_dir=%%~dpa"
 
 rem Agora definimos os caminhos de destino e origem do link
-set "link_path=%HOMEDRIVE%%HOMEPATH%\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\street_view_plugin"
-set "target_path=%_dir%street_view_plugin"
+set "link_path=%HOMEDRIVE%%HOMEPATH%\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\ferramentas_ebgeo_plugin"
+set "target_path=%_dir%ferramentas_ebgeo_plugin"
 
 echo Criando link:
 echo   De: "%target_path%"

@@ -1,6 +1,6 @@
 import os, sys, copy
 from PyQt5 import QtCore, uic, QtWidgets, QtGui
-from street_view_plugin.factories.iconPathFactory import IconPathFactory
+from ferramentas_ebgeo_plugin.factories.iconPathFactory import IconPathFactory
 from datetime import datetime
 
 class IconLabelWidget(QtWidgets.QWidget):
@@ -23,7 +23,7 @@ class IconLabelWidget(QtWidgets.QWidget):
 
     def getUIPath(self):
         return os.path.join(
-            os.path.abspath(os.path.dirname(__file__)), 
+            os.path.abspath(os.path.dirname(__file__)),
             '..',
             'uis',
             'iconLabelWidget.ui'

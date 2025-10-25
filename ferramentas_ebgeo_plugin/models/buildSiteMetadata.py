@@ -19,12 +19,12 @@ import glob
 import csv
 import math
 
-from street_view_plugin.models import graphHandler
+from ferramentas_ebgeo_plugin.models import graphHandler
 
 class BuildSiteMetadata:
 
     def build(self, imageLayer: QgsVectorLayer, connectionLayer: QgsVectorLayer, metadataFolderPath):
-        imageDict = {image['index']: image for image in imageLayer.getFeatures()} 
+        imageDict = {image['index']: image for image in imageLayer.getFeatures()}
         try:
             import networkx as nx
         except ImportError:
@@ -74,7 +74,7 @@ class BuildSiteMetadata:
                 )
                 images[photoRange]['images'][photoNumber]['neighbors'] = []
         for photoRange in images:
-            images[photoRange]['pointFeatures'] = sorted(images[photoRange]['pointFeatures'], key=lambda f: f['pointId'], reverse=True) 
+            images[photoRange]['pointFeatures'] = sorted(images[photoRange]['pointFeatures'], key=lambda f: f['pointId'], reverse=True)
             images[photoRange]['line'] = QgsGeometry.fromPolyline([ QgsPoint(f.geometry().asPoint().x(), f.geometry().asPoint().y()) for f in images[photoRange]['pointFeatures'] ])
         return images
 
@@ -88,7 +88,7 @@ class BuildSiteMetadata:
         distance = QgsDistanceArea()
         distance.setEllipsoid('WGS84')
         return distance.measureLine(point1, point2)
-    
+
     def getPreviousNextNeighbours(self, currentPoint, allneighbours):
         previousPoint = None
         nextPoint = None
@@ -109,7 +109,7 @@ class BuildSiteMetadata:
                     previousPoint, neighbour = self.seqOrNeighbours(currentPoint, previousPoint, neighbour)
                     neighbours.append(neighbour)
         return previousPoint, nextPoint, neighbours
-    
+
     def seqOrNeighbours(self, currentPoint, point1, point2):
         namePoint1 = point1['nome_img']
         namePoint1Split = namePoint1.split('_')
@@ -146,8 +146,8 @@ class BuildSiteMetadata:
 
             # heading = math.degrees(math.radians(float(currentPoint['heading_camera_gps'])) + 3.14159) % 360
             heading = self.get_azimuth(cpLatLong, ppLatLong, npLatLong)
-            
-                
+
+
 
             if nextPoint:
                 links.append({
@@ -206,11 +206,11 @@ class BuildSiteMetadata:
         for meta in metadata:
             with open(os.path.join(metadataFolderPath, '{}.json'.format(meta['camera']['img'])), 'w') as outfile:
                 json.dump(
-                    meta, 
+                    meta,
                     outfile,
                     indent=4
                 )
-    
+
     def calculate_azimuth(self, point1, point2):
         """
         Calcula o azimute entre dois pontos.
@@ -220,14 +220,14 @@ class BuildSiteMetadata:
         """
         lat1, lon1 = math.radians(point1[0]), math.radians(point1[1])
         lat2, lon2 = math.radians(point2[0]), math.radians(point2[1])
-        
+
         delta_lon = lon2 - lon1
         x = math.sin(delta_lon) * math.cos(lat2)
         y = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(delta_lon)
-        
+
         initial_bearing = math.atan2(x, y)
         initial_bearing = math.degrees(initial_bearing)
-        
+
         # Normalizar o azimute para estar entre 0 e 360 graus
         azimuth = (initial_bearing + 360) % 360
         return azimuth
@@ -245,14 +245,14 @@ class BuildSiteMetadata:
         if previousPoint and nextPoint:
             azimuth1 = self.calculate_azimuth(previousPoint, currentPoint)
             azimuth2 = self.calculate_azimuth(currentPoint, nextPoint)
-            
+
             # Calcula a média levando em conta que azimutes são circulares (0 a 360 graus)
             azimuth_mean = (azimuth1 + azimuth2) / 2
-            
+
             # Verifica se a diferença entre os azimutes é maior que 180 para evitar erros na média circular
             if abs(azimuth1 - azimuth2) > 180:
                 azimuth_mean = (azimuth_mean + 180) % 360
-            
+
             return azimuth_mean
         elif previousPoint:
             return self.calculate_azimuth(previousPoint, currentPoint)
@@ -292,7 +292,7 @@ class BuildSiteMetadata:
                         w.writerow(images[photoRange]['images'][photoNumber])
 
     def saveGeojson(self, layer, outputPath):
-        
+
 
         # Salvar a camada como GeoJSON
         error = QgsVectorFileWriter.writeAsVectorFormat(

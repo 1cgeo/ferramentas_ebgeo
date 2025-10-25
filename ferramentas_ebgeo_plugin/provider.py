@@ -7,7 +7,7 @@ from .processings.recuperar.Adiciona_coordenadas_EXIF import AdicionaCoordenadas
 from qgis.PyQt.QtGui import QIcon
 import os
 
-class StreetviewProvider(QgsProcessingProvider):
+class FerramentasebgeoProvider(QgsProcessingProvider):
     def loadAlgorithms(self):
         self.addAlgorithm(ComprimirImagensExifTool())
         self.addAlgorithm(ImageToGeometry())

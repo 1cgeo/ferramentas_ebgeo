@@ -1142,7 +1142,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>Pontos das Imagens 
+                    <string>Pontos das Imagens
 (Coincidentes com as linhas):</string>
                    </property>
                   </widget>
@@ -1306,7 +1306,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>Pontos das Imagens 
+                    <string>Pontos das Imagens
 (Coincidentes com as linhas):</string>
                    </property>
                   </widget>
@@ -1382,19 +1382,19 @@
   <customwidget>
    <class>IconLabelWidget</class>
    <extends>QWidget</extends>
-   <header>street_view_plugin.widgets.iconLabelWidget.h</header>
+   <header>ferramentas_ebgeo_plugin.widgets.iconLabelWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>ComboBoxMapLayerPoint</class>
    <extends>QWidget</extends>
-   <header>street_view_plugin.widgets.comboBoxMapLayerPoint.h</header>
+   <header>ferramentas_ebgeo_plugin.widgets.comboBoxMapLayerPoint.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>ComboBoxMapLayerLine</class>
    <extends>QWidget</extends>
-   <header>street_view_plugin.widgets.comboBoxMapLayerLine.h</header>
+   <header>ferramentas_ebgeo_plugin.widgets.comboBoxMapLayerLine.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

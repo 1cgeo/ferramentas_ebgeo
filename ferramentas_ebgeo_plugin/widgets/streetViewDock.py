@@ -1,13 +1,13 @@
 import os, sys, copy
 from PyQt5 import QtCore, uic, QtWidgets, QtGui
-from street_view_plugin.factories.iconPathFactory import IconPathFactory
+from ferramentas_ebgeo_plugin.factories.iconPathFactory import IconPathFactory
 from datetime import datetime
 import time
 
 class StreetViewDock(QtWidgets.QDockWidget):
 
     def __init__(
-            self, 
+            self,
             controller,
             iconPathFactory=IconPathFactory()
         ):
@@ -97,7 +97,7 @@ class StreetViewDock(QtWidgets.QDockWidget):
             '''.format(datetime.fromtimestamp(currentEpoch + durationSeconds))
         )
         self.getController().startBatteryAlarm()
-        
+
     def updateStorageStatus(self, status='info'):
         self.stopStorageAlarmBtn.setVisible(False if status == 'info' else True)
         if status == 'warning':
@@ -241,10 +241,10 @@ class StreetViewDock(QtWidgets.QDockWidget):
             )
         )
         button.setIconSize(QtCore.QSize(20, 20))
-                
+
     def getUIPath(self):
         return os.path.join(
-            os.path.abspath(os.path.dirname(__file__)), 
+            os.path.abspath(os.path.dirname(__file__)),
             '..',
             'uis',
             'streetViewDock.ui'
@@ -253,17 +253,17 @@ class StreetViewDock(QtWidgets.QDockWidget):
     def showErrorMessage(self, title, text):
         QtWidgets.QMessageBox.critical(
             self,
-            title, 
+            title,
             text
         )
 
     def showInfoMessage(self, title, text):
         QtWidgets.QMessageBox.information(
             self,
-            title, 
+            title,
             text
         )
-    
+
     def showYesNoMessage(self, title, text):
         msgBox = QtWidgets.QMessageBox()
         msgBox.setWindowTitle(title)
@@ -274,11 +274,11 @@ class StreetViewDock(QtWidgets.QDockWidget):
         if result == QtWidgets.QMessageBox.Yes:
             return True
         return False
-    
+
     @QtCore.pyqtSlot(bool)
     def on_selectGyroFilePathBtn_clicked(self):
         filePath = QtWidgets.QFileDialog.getSaveFileName(
-            self, 
+            self,
             "",
             "trak-giro-{}.csv".format(
                 datetime.now().strftime("%d-%m-%Y")
@@ -353,7 +353,7 @@ class StreetViewDock(QtWidgets.QDockWidget):
     @QtCore.pyqtSlot(bool)
     def on_selectImageFolderPathBtn_clicked(self):
         filePath = QtWidgets.QFileDialog.getExistingDirectory(
-            self, 
+            self,
             "Selecionar Pasta de Imagens",
             ""
         )
@@ -373,7 +373,7 @@ class StreetViewDock(QtWidgets.QDockWidget):
     @QtCore.pyqtSlot(bool)
     def on_selectMetadataFolderPathBtn_clicked(self):
         filePath = QtWidgets.QFileDialog.getExistingDirectory(
-            self, 
+            self,
             "Selecionar Pasta de Metadados",
             ""
         )

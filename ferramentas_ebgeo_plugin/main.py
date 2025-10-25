@@ -10,7 +10,7 @@ from qgis.utils import iface
 
 # Importação do provider
 from qgis.core import QgsApplication
-from .provider import StreetviewProvider
+from .provider import FerramentasebgeoProvider
 
 class Main:
 
@@ -32,14 +32,14 @@ class Main:
         )
         self.qgisCtrl.addActionDigitizeToolBar(self.action)
 
-        # ➕ Registrar o StreetviewProvider
-        self.provider = StreetviewProvider()
+        # ➕ Registrar o FerramentasebgeoProvider
+        self.provider = FerramentasebgeoProvider()
         QgsApplication.processingRegistry().addProvider(self.provider)
 
     def unload(self):
         self.qgisCtrl.removeActionDigitizeToolBar(self.action)
 
-        # ➖ Desregistrar o StreetviewProvider
+        # ➖ Desregistrar o FerramentasebgeoProvider
         if self.provider:
             QgsApplication.processingRegistry().removeProvider(self.provider)
             self.provider = None

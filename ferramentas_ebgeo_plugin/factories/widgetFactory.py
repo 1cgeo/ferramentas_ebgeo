@@ -1,5 +1,5 @@
 
-from street_view_plugin.widgets.streetViewDock import StreetViewDock
+from ferramentas_ebgeo_plugin.widgets.streetViewDock import StreetViewDock
 
 class WidgetFactory:
 

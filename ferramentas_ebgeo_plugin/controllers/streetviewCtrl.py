@@ -1,10 +1,10 @@
-from street_view_plugin.factories.widgetFactory import WidgetFactory
-from street_view_plugin.factories.functionFactory import FunctionFactory
+from ferramentas_ebgeo_plugin.factories.widgetFactory import WidgetFactory
+from ferramentas_ebgeo_plugin.factories.functionFactory import FunctionFactory
 from datetime import datetime
 
 class StreetViewCtrl:
 
-    def __init__(self, 
+    def __init__(self,
             qgis,
             widgetFactory=WidgetFactory(),
             functionFactory=FunctionFactory()
@@ -93,7 +93,7 @@ class StreetViewCtrl:
         )
         if (startTimeEpoch + durationSeconds) > datetime.now().timestamp():
             return
-        
+
         self.streetViewDock.updateStorageStatus('warning')
         self.beep()
 
@@ -138,24 +138,24 @@ class StreetViewCtrl:
     def buildSiteMetadata(self, imageLayer, connectionLayer, metadataFolderPath):
         buildSiteMetadata = self.functionFactory.create('BuildSiteMetadata')
         buildSiteMetadata.build(
-            imageLayer, 
-            connectionLayer, 
+            imageLayer,
+            connectionLayer,
             metadataFolderPath
         )
 
     def processPointsAndLines(self, pointsLayer, linesLayer, distance):
         processPointsAndLines = self.functionFactory.create('ProcessPointsAndLines')
         processPointsAndLines.process(
-            pointsLayer, 
-            linesLayer, 
+            pointsLayer,
+            linesLayer,
             distance
         )
 
     def applyMask(self, inputFolder, outputFolder, mask, imageLayer):
         applyMask = self.functionFactory.create('ApplyMask')
         applyMask.apply(
-            inputFolder, 
-            outputFolder, 
+            inputFolder,
+            outputFolder,
             mask,
             imageLayer
         )
@@ -163,11 +163,10 @@ class StreetViewCtrl:
     def applyBlurMask(self, inputFolder, outputFolder, mask, imageLayer):
         applyBlurMask = self.functionFactory.create('ApplyBlurMask')
         applyBlurMask.apply(
-            inputFolder, 
-            outputFolder, 
+            inputFolder,
+            outputFolder,
             mask,
             imageLayer
         )
 
-    
-            
+

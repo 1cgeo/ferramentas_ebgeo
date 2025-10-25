@@ -58,7 +58,7 @@ class ApplyBlurMask:
 
         current_file = os.path.abspath(__file__)
         current_dir = os.path.dirname(current_file)
-        while not os.path.basename(current_dir) == "street_view_plugin" and current_dir != "/":
+        while not os.path.basename(current_dir) == "ferramentas_ebgeo_plugin" and current_dir != "/":
             current_dir = os.path.dirname(current_dir)
 
         coat_mask_path = os.path.join(current_dir, "resources", "masks", "coat_mask.png")
