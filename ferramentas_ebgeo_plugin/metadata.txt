@@ -7,16 +7,16 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Street View Plugin
+name=Ferramentas do EBGeo
 qgisMinimumVersion=3.10
-description=Conjunto de ferramentas para produzir street view.
+description=Conjunto de ferramentas auxiliares para o EBGeo.
 version=0.0.0
 author=Brazilian Army Geographic Service
 
 # Tags are comma separated with spaces allowed
 tags=EDGV,PostGIS,Spatialite,Brazilian,Army,Exército,Brasileiro,DSG,Diretoria,Serviço,Geográfico,BDGEx,Database,Spatial,INDE,SDI,Infrastructure,Image,Fusion,HSV,Model,Script
 
-icon=icons/streetview.png
+icon=icons/logo_ebgeo.png
 # experimental flag
 experimental=False
 

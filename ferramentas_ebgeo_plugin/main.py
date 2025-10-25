@@ -53,5 +53,5 @@ class Main:
                 os.path.dirname(__file__)
             )),
             'icons',
-            'streetview.png'
+            'logo_ebgeo.png'
         )

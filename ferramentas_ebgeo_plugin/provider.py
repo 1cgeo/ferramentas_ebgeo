@@ -16,13 +16,13 @@ class FerramentasebgeoProvider(QgsProcessingProvider):
         self.addAlgorithm(AdicionaCoordenadasExiftool())
 
     def id(self):
-        return "streetview"
+        return "ferramentasebgeo"
 
     def name(self):
-        return "Street View - Processamentos Auxiliares"
+        return "Ferramentas EBGeo - Processamentos Auxiliares"
 
     def longName(self):
         return self.name()
 
     def icon(self):
-        return QIcon(os.path.join(os.path.dirname(__file__), 'icons', 'streetview.png'))
+        return QIcon(os.path.join(os.path.dirname(__file__), 'icons', 'logo_ebgeo.png'))
