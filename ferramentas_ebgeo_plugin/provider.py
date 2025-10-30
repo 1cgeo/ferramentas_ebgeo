@@ -4,6 +4,7 @@ from .processings.pre_processar.Pontos_imagens import ImageToGeometry  # Plota p
 from .processings.pre_processar.Remove_pontos_parada import RemovePontosDeParada  # Copia imagens
 from .processings.pre_processar.Copia_imagens import CopiaImagens  # Copia imagens
 from .processings.recuperar.Adiciona_coordenadas_EXIF import AdicionaCoordenadasExiftool  # Adiciona metadados GPS
+from .processings.imagens_ebgeo.combinar_mbtiles import CombinarMBTiles
 from qgis.PyQt.QtGui import QIcon
 import os
 
@@ -14,12 +15,13 @@ class FerramentasebgeoProvider(QgsProcessingProvider):
         self.addAlgorithm(RemovePontosDeParada())
         self.addAlgorithm(CopiaImagens())
         self.addAlgorithm(AdicionaCoordenadasExiftool())
+        self.addAlgorithm(CombinarMBTiles())
 
     def id(self):
         return "ferramentasebgeo"
 
     def name(self):
-        return "Ferramentas EBGeo - Processamentos Auxiliares"
+        return "Ferramentas EBGeo"
 
     def longName(self):
         return self.name()
