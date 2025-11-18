@@ -1869,6 +1869,15 @@ export default{
               5,
               21
             ]
+          ],
+          "symbol-sort-key": [
+            "*",
+            -1,
+            [
+              "coalesce",
+              ["get", "populacao"],
+              0
+            ]
           ]
         },
         "paint": {
@@ -2909,6 +2918,15 @@ export default{
               22,
               5,
               21
+            ]
+          ],
+          "symbol-sort-key": [
+            "*",
+            -1,
+            [
+              "coalesce",
+              ["get", "populacao"],
+              0
             ]
           ]
         },
@@ -4048,6 +4066,15 @@ export default{
               5,
               21
             ]
+          ],
+          "symbol-sort-key": [
+            "*",
+            -1,
+            [
+              "coalesce",
+              ["get", "populacao"],
+              0
+            ]
           ]
         },
         "paint": {
@@ -5167,6 +5194,15 @@ export default{
               22,
               5,
               21
+            ]
+          ],
+          "symbol-sort-key": [
+            "*",
+            -1,
+            [
+              "coalesce",
+              ["get", "populacao"],
+              0
             ]
           ]
         },
