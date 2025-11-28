@@ -7,6 +7,7 @@ from .processings.recuperar.Adiciona_coordenadas_EXIF import AdicionaCoordenadas
 from .processings.imagens_ebgeo.combinar_mbtiles import CombinarMBTiles
 from .processings.vetores_ebgeo.construir_estilo import ConstruiEstilo
 from .processings.vetores_ebgeo.gerarGeoJSON import ExportPostGISGeoJSONAlgorithm
+from .processings.vetores_ebgeo.construir_grid import ExportGridAlgorithm
 from qgis.PyQt.QtGui import QIcon
 import os
 
@@ -20,6 +21,7 @@ class FerramentasebgeoProvider(QgsProcessingProvider):
         self.addAlgorithm(CombinarMBTiles())
         self.addAlgorithm(ConstruiEstilo())
         self.addAlgorithm(ExportPostGISGeoJSONAlgorithm())
+        self.addAlgorithm(ExportGridAlgorithm())
 
     def id(self):
         return "ferramentasebgeo"
