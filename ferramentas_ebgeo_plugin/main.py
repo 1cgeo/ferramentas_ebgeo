@@ -6,7 +6,6 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from .modules.qgis.controllers.qgisCtrl import QgisCtrl
 from .controllers.streetviewCtrl import StreetViewCtrl
 from .config import Config
-from qgis.utils import iface
 
 # Importação do provider
 from qgis.core import QgsApplication

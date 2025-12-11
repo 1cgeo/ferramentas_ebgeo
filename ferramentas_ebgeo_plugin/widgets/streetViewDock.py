@@ -2,7 +2,7 @@ import os, sys, copy
 from PyQt5 import QtCore, uic, QtWidgets, QtGui
 from ferramentas_ebgeo_plugin.factories.iconPathFactory import IconPathFactory
 from datetime import datetime
-import time
+from ..models.camera import CameraType
 
 class StreetViewDock(QtWidgets.QDockWidget):
 
@@ -15,6 +15,7 @@ class StreetViewDock(QtWidgets.QDockWidget):
         uic.loadUi(self.getUIPath(), self)
         self.controller = controller
         self.iconPathFactory = iconPathFactory
+        self.tabWidget.setTabVisible(0, False)
         self.dateTimeEdit.setDisplayFormat(
             self.getDateTimeFormat()
         )
@@ -363,11 +364,12 @@ class StreetViewDock(QtWidgets.QDockWidget):
 
     @QtCore.pyqtSlot(bool)
     def on_buildStructBtn_clicked(self):
-        if not self.imageFolderPathLe.text() :
-            self.showErrorMessage('Erro', 'Selecione a Pasta de Imagens')
+        imageFolderPath = self.imageFolderPathLe.text()
+        if imageFolderPath == '' :
+            self.showErrorMessage('Erro', 'Selecione a pasta de imagens!')
             return
         self.getController().buildStruct(
-            self.imageFolderPathLe.text()
+            imageFolderPath
         )
 
     @QtCore.pyqtSlot(bool)
