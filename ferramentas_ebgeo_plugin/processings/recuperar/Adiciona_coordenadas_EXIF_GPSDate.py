@@ -25,10 +25,7 @@ __author__ = '1° Ten Raul Magno / 1° CGEO'
 __date__ = '2025-04-16'
 __copyright__ = '(C) 2024 by Brazilian Army Cartographic Mapoteca Tools'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
 __revision__ = '$Format:%H$'
-
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
@@ -42,11 +39,13 @@ from qgis.core import (
 import os
 import subprocess
 import shutil
+from datetime import datetime
 
-class AdicionaCoordenadasExiftool(QgsProcessingAlgorithm):
+class AdicionaCoordenadasExiftoolGPSDate(QgsProcessingAlgorithm):
     LAYER = 'LAYER'
     NAME_FIELD = 'NAME_FIELD'
     ALT_FIELD = 'ALT_FIELD'
+    TIME_FIELD = 'TIME_FIELD'
     FOLDER_IMG = 'FOLDER_IMG'
     OUTPUT_FOLDER = 'OUTPUT_FOLDER'
 
@@ -77,6 +76,14 @@ class AdicionaCoordenadasExiftool(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
+            QgsProcessingParameterField(
+                self.TIME_FIELD,
+                'Campo com o GPSTime (data e hora)',
+                parentLayerParameterName=self.LAYER
+            )
+        )
+
+        self.addParameter(
             QgsProcessingParameterFile(
                 self.FOLDER_IMG,
                 'Pasta com imagens',
@@ -96,6 +103,7 @@ class AdicionaCoordenadasExiftool(QgsProcessingAlgorithm):
         layer = self.parameterAsSource(parameters, self.LAYER, context)
         name_field = self.parameterAsString(parameters, self.NAME_FIELD, context)
         alt_field = self.parameterAsString(parameters, self.ALT_FIELD, context)
+        time_field = self.parameterAsString(parameters, self.TIME_FIELD, context)
         folder_img = self.parameterAsString(parameters, self.FOLDER_IMG, context)
         output_folder = self.parameterAsString(parameters, self.OUTPUT_FOLDER, context)
 
@@ -125,6 +133,18 @@ class AdicionaCoordenadasExiftool(QgsProcessingAlgorithm):
                 feedback.pushWarning(f'Altitude inválida para: {name}')
                 continue
 
+            # Lê GPSTime
+            try:
+                gps_time_raw = str(feature[time_field])
+                # Tenta converter automaticamente (supondo formato YYYY-MM-DD HH:MM:SS)
+                gps_dt = datetime.fromisoformat(gps_time_raw)
+                gps_date = gps_dt.strftime("%Y:%m:%d")
+                gps_time = gps_dt.strftime("%H:%M:%S")
+            except Exception:
+                feedback.pushWarning(f'GPSTime inválido para: {name} ({feature[time_field]})')
+                gps_date = None
+                gps_time = None
+
             lat_ref = 'N' if lat >= 0 else 'S'
             lon_ref = 'E' if lon >= 0 else 'W'
             lat = abs(lat)
@@ -150,9 +170,16 @@ class AdicionaCoordenadasExiftool(QgsProcessingAlgorithm):
                 f"-GPSLongitude={lon}",
                 f"-GPSLongitudeRef={lon_ref}",
                 f"-GPSAltitude={altitude}",
-                "-overwrite_original",
-                output_path
+                "-overwrite_original"
             ]
+
+            if gps_date and gps_time:
+                cmd.extend([
+                    f"-GPSDateStamp={gps_date}",
+                    f"-GPSTimeStamp={gps_time}"
+                ])
+
+            cmd.append(output_path)
 
             feedback.pushDebugInfo("Comando exiftool: " + " ".join(cmd))
 
@@ -161,17 +188,17 @@ class AdicionaCoordenadasExiftool(QgsProcessingAlgorithm):
                 if result.returncode != 0:
                     feedback.reportError(f"Erro ao rodar exiftool: {result.stderr}")
                 else:
-                    feedback.pushInfo(f'Coordenadas e altitude adicionadas: {output_path}')
+                    feedback.pushInfo(f'Coordenadas, altitude e tempo adicionados: {output_path}')
             except Exception as e:
                 feedback.reportError(f'Erro ao executar exiftool: {str(e)}')
 
         return {}
 
     def name(self):
-        return 'adicionar_coordenadas'
+        return 'adicionar_coordenadas_gpsdate'
 
     def displayName(self):
-        return '3. Adicionar metadados de coordenadas GPS às imagens'
+        return '3.1 Adicionar metadados de coordenadas GPS às imagens - GPSDate'
 
     def group(self):
         return 'Recuperar Imagens'
@@ -180,4 +207,4 @@ class AdicionaCoordenadasExiftool(QgsProcessingAlgorithm):
         return 'recuperar'
 
     def createInstance(self):
-        return AdicionaCoordenadasExiftool()
+        return AdicionaCoordenadasExiftoolGPSDate()

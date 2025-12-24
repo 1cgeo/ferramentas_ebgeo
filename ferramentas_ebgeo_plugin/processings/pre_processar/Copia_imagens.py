@@ -58,8 +58,8 @@ class CopiaImagens(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.LAYER,
-                'Camada de pontos',
-                [QgsProcessing.TypeVectorPoint]
+                'Camada de pontos ou tabela',
+                [QgsProcessing.TypeVector]
             )
         )
 
@@ -74,7 +74,7 @@ class CopiaImagens(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFile(
                 self.FOLDER_IMG,
-                'Pasta com imagens',
+                'Pasta com imagens (busca recursiva em subpastas)',
                 behavior=QgsProcessingParameterFile.Folder
             )
         )
@@ -86,6 +86,35 @@ class CopiaImagens(QgsProcessingAlgorithm):
                 behavior=QgsProcessingParameterFile.Folder
             )
         )
+
+    def build_image_index(self, folder_img, feedback):
+        """
+        Cria um índice (dicionário) com o nome do arquivo SEM extensão como chave e o caminho completo como valor.
+        Percorre recursivamente todas as subpastas.
+        """
+        image_index = {}
+        feedback.pushInfo(f'Indexando imagens em: {folder_img}')
+        
+        total_indexed = 0
+        for root, dirs, files in os.walk(folder_img):
+            for file in files:
+                # Considerar apenas arquivos de imagem comuns
+                if file.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tif', '.tiff')):
+                    full_path = os.path.join(root, file)
+                    # Usar o nome sem extensão como chave
+                    name_without_ext = os.path.splitext(file)[0]
+                    # Se houver duplicatas, o último encontrado prevalece
+                    if name_without_ext in image_index:
+                        feedback.pushInfo(f'Aviso: Imagem duplicada encontrada: {file}')
+                    image_index[name_without_ext] = full_path
+                    total_indexed += 1
+                    
+                    # Feedback periódico durante a indexação
+                    if total_indexed % 100 == 0:
+                        feedback.pushInfo(f'Indexadas {total_indexed} imagens...')
+        
+        feedback.pushInfo(f'Indexação concluída: {total_indexed} imagens encontradas')
+        return image_index
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsSource(parameters, self.LAYER, context)
@@ -100,12 +129,27 @@ class CopiaImagens(QgsProcessingAlgorithm):
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
 
+        # Indexar todas as imagens nas subpastas
+        feedback.pushInfo('Iniciando indexação das imagens...')
+        image_index = self.build_image_index(folder_img, feedback)
+        
+        if not image_index:
+            feedback.reportError('Nenhuma imagem encontrada na pasta especificada ou suas subpastas')
+            return {}
+
+        # Verificar se o usuário cancelou após a indexação
+        if feedback.isCanceled():
+            feedback.pushInfo('Processo cancelado pelo usuário')
+            return {}
+
         # Cria uma lista de tarefas para o executor (baseado nos nomes das imagens)
         total_features = layer.featureCount()
         feedback.setProgress(0)
         
         processed_count = 0
         failed_count = 0
+        skipped_count = 0
+        not_found_count = 0
         
         # Coleta todas as tarefas antecipadamente
         tasks = []
@@ -118,16 +162,28 @@ class CopiaImagens(QgsProcessingAlgorithm):
             name = feature[name_field]
             if not name:  # Verificar nomes vazios
                 continue
-                
-            image_path = os.path.join(folder_img, name)
-            if os.path.exists(image_path):
-                output_path = os.path.join(output_folder, name)
+            
+            # Remover extensão do nome de entrada (se houver)
+            name_without_ext = os.path.splitext(name)[0]
+            
+            # Buscar a imagem no índice
+            if name_without_ext in image_index:
+                image_path = image_index[name_without_ext]
+                # Usar o nome original do arquivo encontrado (com extensão)
+                original_filename = os.path.basename(image_path)
+                output_path = os.path.join(output_folder, original_filename)
                 tasks.append((image_path, output_path))
             else:
                 feedback.pushInfo(f'Imagem não encontrada: {name}')
+                not_found_count += 1
         
         total_tasks = len(tasks)
         feedback.pushInfo(f'Total de imagens a serem copiadas: {total_tasks}')
+        feedback.pushInfo(f'Total de imagens não encontradas: {not_found_count}')
+        
+        if total_tasks == 0:
+            feedback.pushInfo('Nenhuma imagem para copiar')
+            return {}
         
         # Processamento em lotes para evitar sobrecarga de memória
         batch_start = 0
@@ -159,12 +215,15 @@ class CopiaImagens(QgsProcessingAlgorithm):
                     
                     output_path = future_to_path[future]
                     try:
-                        success = future.result()
-                        processed_count += 1
-                        if success:
+                        result = future.result()
+                        if result == 'skipped':
+                            skipped_count += 1
+                            processed_count += 1
+                        elif result:
+                            processed_count += 1
                             # Limitar feedback para reduzir operações de UI
                             if processed_count % 10 == 0:
-                                feedback.pushInfo(f'Progresso: {processed_count}/{total_tasks} imagens copiadas')
+                                feedback.pushInfo(f'Progresso: {processed_count}/{total_tasks} processadas ({skipped_count} ignoradas)')
                         else:
                             failed_count += 1
                     except Exception as e:
@@ -183,12 +242,15 @@ class CopiaImagens(QgsProcessingAlgorithm):
             # Pausa entre os lotes para liberar recursos
             time.sleep(0.1)
         
-        feedback.pushInfo(f'Processo finalizado. {processed_count} imagens copiadas com sucesso. {failed_count} falhas.')
+        feedback.pushInfo(f'Processo finalizado. {processed_count - skipped_count} imagens copiadas com sucesso. {skipped_count} ignoradas (já existiam). {failed_count} falhas. {not_found_count} não encontradas.')
         
         return {}
 
     def copy_image(self, image_path, output_path):
         try:
+            # Verificar se o arquivo já existe no destino
+            if os.path.exists(output_path):
+                return 'skipped'
             shutil.copy2(image_path, output_path)
             return True
         except Exception:

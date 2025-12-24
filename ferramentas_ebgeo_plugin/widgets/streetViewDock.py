@@ -416,6 +416,7 @@ class StreetViewDock(QtWidgets.QDockWidget):
             distance
         )
         self.showInfoMessage('Aviso', 'Camadas processadas com sucesso!')
+    
 
     @QtCore.pyqtSlot(bool)
     def on_applyMaskBtn_clicked(self):
