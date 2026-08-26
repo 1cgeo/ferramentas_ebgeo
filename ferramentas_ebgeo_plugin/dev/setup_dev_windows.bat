@@ -1,12 +1,27 @@
 @echo off
-rem Caminho da pasta onde está esse script (dev)
-set "_updir=%~dp0"
+setlocal
 
-rem Subir dois níveis: de \dev para \street_view_gopro
+rem === Se não tem argumento, ainda não foi elevado — salva o perfil e relança ===
+if "%~1"=="" (
+    net session >nul 2>&1
+    if %errorlevel% neq 0 (
+        powershell -Command "Start-Process '%~f0' -ArgumentList '%USERPROFILE%' -Verb RunAs"
+        exit /b
+    )
+)
+
+rem === Define o perfil: usa argumento se foi passado, senão usa variável atual ===
+if not "%~1"=="" (
+    set "_userprofile=%~1"
+) else (
+    set "_userprofile=%USERPROFILE%"
+)
+
+rem === Caminhos ===
+set "_updir=%~dp0"
 for %%a in ("%_updir%\..") do set "_dir=%%~dpa"
 
-rem Agora definimos os caminhos de destino e origem do link
-set "link_path=%HOMEDRIVE%%HOMEPATH%\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\ferramentas_ebgeo_plugin"
+set "link_path=%_userprofile%\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\ferramentas_ebgeo_plugin"
 set "target_path=%_dir%ferramentas_ebgeo_plugin"
 
 echo Criando link:
